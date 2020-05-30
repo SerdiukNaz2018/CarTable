@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import { Row, Col, Container } from "react-bootstrap";
 import axios from "axios";
 
+
+
 class VehicleTable extends Component {
     state = {
         showModal: false,
@@ -61,7 +63,7 @@ class VehicleTable extends Component {
 
     editCarHandler = () => {
         axios
-            .put("https://localhost:44382/api/cars" + this.state.editedCar, {
+            .put("https://localhost:44382/api/cars/" + this.state.editedCar, {
                 model: this.state.newModel,
                 licensePlate: this.state.newLicensePlate,
                 mileage: +this.state.newMileage,
