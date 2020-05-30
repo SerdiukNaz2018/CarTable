@@ -110,7 +110,7 @@ class VehicleTable extends Component {
                 <Row
                     key={car.code}
                     style={{
-                        backgroundColor: colors[car.code],
+                        backgroundColor: colors[car.code % colors.length()],
                         margin: "2px",
                         borderRadius: "5px",
                         padding: "10px",
