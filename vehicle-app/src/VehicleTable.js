@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Row, Col, Container } from "react-bootstrap";
 import axios from "axios";
+import colors from './Colors';
 
 class VehicleTable extends Component {
     state = {
@@ -109,7 +110,7 @@ class VehicleTable extends Component {
                 <Row
                     key={car.code}
                     style={{
-                        backgroundColor: "lightBlue",
+                        backgroundColor: colors[car.code],
                         margin: "2px",
                         borderRadius: "5px",
                         padding: "10px",
