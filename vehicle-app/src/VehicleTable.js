@@ -7,41 +7,23 @@ class VehicleTable extends Component {
         showModal: false,
         adding: false,
 
+        errorMessage: '',
+
         editedCar: null,
 
-        newCode: "",
         newLicensePlate: "",
         newMileage: "",
         newModel: "",
 
-        cars: [
-            {
-                code: "aaaaaa",
-                licensePlate: "aa1111ss",
-                mileage: 123,
-                model: "model",
-            },
-            {
-                code: "bbbbbb",
-                licensePlate: "aa1111ss",
-                mileage: 123,
-                model: "model",
-            },
-            {
-                code: "cccccc",
-                licensePlate: "aa1111ss",
-                mileage: 123,
-                model: "model",
-            },
-        ],
+        cars: [],
     };
 
     enableEditMode = id => {
         this.setState({
+            errorMessage: '',
             showModal: true,
             adding: false,
             editedCar: id,
-            newCode: this.state.cars[id].code,
             newMileage: this.state.cars[id].mileage,
             newLicensePlate: this.state.cars[id].licensePlate,
             newModel: this.state.cars[id].model,
@@ -54,7 +36,7 @@ class VehicleTable extends Component {
 
     loadCars = () => {
         axios
-            .get()
+            .get('https://localhost:44382/api/cars')
             .then(response => {
                 this.setState({ cars: response.data });
             })
@@ -65,7 +47,7 @@ class VehicleTable extends Component {
 
     deleteCarHandler = id => {
         axios
-            .delete("" + id.toString())
+            .delete("https://localhost:44382/api/cars/" + id.toString())
             .then(response => {
                 this.loadCars();
             })
@@ -76,18 +58,24 @@ class VehicleTable extends Component {
 
     editCarHandler = () => {
         axios
-            .post("", {})
+            .put("https://localhost:44382/api/cars" + this.state.editedCar, {
+                model: this.state.newModel,
+                licensePlate: this.state.newLicensePlate,
+                mileage: +this.state.newMileage
+            })
             .then(response => {
                 console.log(response);
             })
             .catch(error => {
                 console.log(error);
+                this.setState({errorMessage: 'shit!'});
             });
         this.loadCars();
     };
 
     enableAdding = () => {
         this.setState({
+            errorMessage: '',
             newCode: null,
             newMileage: null,
             newLicensePlate: null,
@@ -97,13 +85,25 @@ class VehicleTable extends Component {
         });
     };
 
-    addCarHandler = () => {};
+    addCarHandler = () => {
+        axios.post('https://localhost:44382/api/cars', {
+            model: this.state.newModel,
+            licensePlate: this.state.newLicensePlate,
+            mileage: +this.state.newMileage
+        })
+            .then(response => {
+                console.log(response);
+            })
+            .catch(error=> {
+                this.setState({errorMessage: 'shit!'});
+            })
+    };
 
     render() {
-        const vehicles = this.state.cars.map((car, index) => {
+        const vehicles = this.state.cars.map(car => {
             return (
                 <Row
-                    key={index}
+                    key={car.code}
                     style={{
                         backgroundColor: "lightBlue",
                         margin: "2px",
@@ -111,20 +111,20 @@ class VehicleTable extends Component {
                         padding: "10px",
                     }}
                 >
-                    <Col>{car.model}</Col>
                     <Col>{car.code}</Col>
-                    <Col>{car.licensePlate}</Col>
+                    <Col>{car.model}</Col>
+                    <Col>{car.licensePlates}</Col>
                     <Col>{car.mileage}</Col>
                     <Col>
                         <button
                             style={{ margin: "0px 10px", borderRadius: "10px" }}
-                            onClick={() => this.enableEditMode(index)}
+                            onClick={() => this.enableEditMode(car.code)}
                         >
                             Edit
                         </button>
                         <button
                             style={{ margin: "0px 10px", borderRadius: "10px" }}
-                            onClick={() => this.deleteCarHandler(index)}
+                            onClick={() => this.deleteCarHandler(car.code)}
                         >
                             Delete
                         </button>
@@ -147,7 +147,7 @@ class VehicleTable extends Component {
                             padding: "20px",
                             position: "fixed",
                             top: "30%",
-                            left: "40%",
+                            left: "42%",
                             textAlign: "center",
                             borderRadius: "20px",
                             border: "1px solid red",
@@ -182,15 +182,6 @@ class VehicleTable extends Component {
                                 this.setState({ newMileage: event.target.value });
                             }}
                         />
-                        <input
-                            placeholder="code"
-                            value={this.state.newCode}
-                            type="text"
-                            style={{ display: "block", margin: "10px" }}
-                            onChange={event => {
-                                this.setState({ newCode: event.target.value });
-                            }}
-                        />
                         <button
                             style={{ margin: "5px", borderRadius: "5px" }}
                             onClick={this.editCarHandler}
@@ -203,6 +194,7 @@ class VehicleTable extends Component {
                         >
                             Cancel
                         </button>
+                        <p style = {{color: 'red'}}>{this.state.errorMessage}</p>
                     </div>
                 ) : null}
 
@@ -212,7 +204,7 @@ class VehicleTable extends Component {
                             padding: "20px",
                             position: "fixed",
                             top: "30%",
-                            left: "40%",
+                            left: "42%",
                             textAlign: "center",
                             borderRadius: "20px",
                             border: "1px solid red",
@@ -244,17 +236,9 @@ class VehicleTable extends Component {
                                 this.setState({ newMileage: event.target.value });
                             }}
                         />
-                        <input
-                            placeholder="code"
-                            type="text"
-                            style={{ display: "block", margin: "10px" }}
-                            onChange={event => {
-                                this.setState({ newCode: event.target.value });
-                            }}
-                        />
                         <button
                             style={{ margin: "5px", borderRadius: "5px" }}
-                            onCick={this.addCarHandler}
+                            onClick={this.addCarHandler}
                         >
                             Add
                         </button>
@@ -264,6 +248,7 @@ class VehicleTable extends Component {
                         >
                             Cancel
                         </button>
+                        <p style = {{color: 'red'}}>{this.state.errorMessage}</p>
                     </div>
                 ) : null}
                 <Container className="container-fluid">{vehicles}</Container>
