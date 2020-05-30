@@ -7,7 +7,7 @@ class VehicleTable extends Component {
         showModal: false,
         adding: false,
 
-        errorMessage: '',
+        errorMessage: "",
 
         editedCar: null,
 
@@ -20,7 +20,7 @@ class VehicleTable extends Component {
 
     enableEditMode = id => {
         this.setState({
-            errorMessage: '',
+            errorMessage: "",
             showModal: true,
             adding: false,
             editedCar: id,
@@ -36,7 +36,7 @@ class VehicleTable extends Component {
 
     loadCars = () => {
         axios
-            .get('https://localhost:44382/api/cars')
+            .get("https://localhost:44382/api/cars")
             .then(response => {
                 this.setState({ cars: response.data });
             })
@@ -61,21 +61,21 @@ class VehicleTable extends Component {
             .put("https://localhost:44382/api/cars" + this.state.editedCar, {
                 model: this.state.newModel,
                 licensePlate: this.state.newLicensePlate,
-                mileage: +this.state.newMileage
+                mileage: +this.state.newMileage,
             })
             .then(response => {
                 console.log(response);
             })
             .catch(error => {
                 console.log(error);
-                this.setState({errorMessage: 'shit!'});
+                this.setState({ errorMessage: "shit!" });
             });
         this.loadCars();
     };
 
     enableAdding = () => {
         this.setState({
-            errorMessage: '',
+            errorMessage: "",
             newCode: null,
             newMileage: null,
             newLicensePlate: null,
@@ -86,17 +86,18 @@ class VehicleTable extends Component {
     };
 
     addCarHandler = () => {
-        axios.post('https://localhost:44382/api/cars', {
-            model: this.state.newModel,
-            licensePlate: this.state.newLicensePlate,
-            mileage: +this.state.newMileage
-        })
+        axios
+            .post("https://localhost:44382/api/cars", {
+                model: this.state.newModel,
+                licensePlates: this.state.newLicensePlate,
+                mileage: +this.state.newMileage,
+            })
             .then(response => {
                 console.log(response);
             })
-            .catch(error=> {
-                this.setState({errorMessage: 'shit!'});
-            })
+            .catch(error => {
+                this.setState({ errorMessage: "shit!" });
+            });
     };
 
     render() {
@@ -170,7 +171,9 @@ class VehicleTable extends Component {
                             type="text"
                             style={{ display: "block", margin: "10px" }}
                             onChange={event => {
-                                this.setState({ newLicensePlate: event.target.value });
+                                this.setState({
+                                    newLicensePlate: event.target.value,
+                                });
                             }}
                         />
                         <input
@@ -179,7 +182,9 @@ class VehicleTable extends Component {
                             type="text"
                             style={{ display: "block", margin: "10px" }}
                             onChange={event => {
-                                this.setState({ newMileage: event.target.value });
+                                this.setState({
+                                    newMileage: event.target.value,
+                                });
                             }}
                         />
                         <button
@@ -194,7 +199,9 @@ class VehicleTable extends Component {
                         >
                             Cancel
                         </button>
-                        <p style = {{color: 'red'}}>{this.state.errorMessage}</p>
+                        <p style={{ color: "red" }}>
+                            {this.state.errorMessage}
+                        </p>
                     </div>
                 ) : null}
 
@@ -225,7 +232,9 @@ class VehicleTable extends Component {
                             type="text"
                             style={{ display: "block", margin: "10px" }}
                             onChange={event => {
-                                this.setState({ newLicensePlate: event.target.value });
+                                this.setState({
+                                    newLicensePlate: event.target.value,
+                                });
                             }}
                         />
                         <input
@@ -233,7 +242,9 @@ class VehicleTable extends Component {
                             type="text"
                             style={{ display: "block", margin: "10px" }}
                             onChange={event => {
-                                this.setState({ newMileage: event.target.value });
+                                this.setState({
+                                    newMileage: event.target.value,
+                                });
                             }}
                         />
                         <button
@@ -248,7 +259,9 @@ class VehicleTable extends Component {
                         >
                             Cancel
                         </button>
-                        <p style = {{color: 'red'}}>{this.state.errorMessage}</p>
+                        <p style={{ color: "red" }}>
+                            {this.state.errorMessage}
+                        </p>
                     </div>
                 ) : null}
                 <Container className="container-fluid">{vehicles}</Container>
