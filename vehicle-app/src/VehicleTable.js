@@ -19,14 +19,17 @@ class VehicleTable extends Component {
     };
 
     enableEditMode = id => {
+        const carId = this.state.cars.findIndex(car => car.code === id);
+
         this.setState({
             errorMessage: "",
             showModal: true,
             adding: false,
             editedCar: id,
-            newMileage: this.state.cars[id].mileage,
-            newLicensePlate: this.state.cars[id].licensePlate,
-            newModel: this.state.cars[id].model,
+
+            newMileage: this.state.cars[carId].mileage,
+            newLicensePlate: this.state.cars[carId].licensePlate,
+            newModel: this.state.cars[carId].model,
         });
     };
 
