@@ -2,14 +2,12 @@ import React, { Component } from "react";
 import { Row, Col, Container } from "react-bootstrap";
 import axios from "axios";
 
-
-
 class VehicleTable extends Component {
     state = {
         showModal: false,
         adding: false,
 
-        errorMessage: "",
+        errorMessage: false,
 
         editedCar: null,
 
@@ -24,7 +22,7 @@ class VehicleTable extends Component {
         const carId = this.state.cars.findIndex(car => car.code === id);
 
         this.setState({
-            errorMessage: "",
+            errorMessage: false,
             showModal: true,
             adding: false,
             editedCar: id,
@@ -65,7 +63,7 @@ class VehicleTable extends Component {
         axios
             .put("https://localhost:44382/api/cars/" + this.state.editedCar, {
                 model: this.state.newModel,
-                licensePlate: this.state.newLicensePlate,
+                licensePlates: this.state.newLicensePlate,
                 mileage: +this.state.newMileage,
             })
             .then(response => {
@@ -73,14 +71,14 @@ class VehicleTable extends Component {
             })
             .catch(error => {
                 console.log(error);
-                this.setState({ errorMessage: "shit!" });
+                this.setState({ errorMessage: true });
             });
         this.loadCars();
     };
 
     enableAdding = () => {
         this.setState({
-            errorMessage: "",
+            errorMessage: false,
             newCode: null,
             newMileage: null,
             newLicensePlate: null,
@@ -101,7 +99,7 @@ class VehicleTable extends Component {
                 console.log(response);
             })
             .catch(error => {
-                this.setState({ errorMessage: "shit!" });
+                this.setState({ errorMessage: true });
             });
     };
 
@@ -204,9 +202,15 @@ class VehicleTable extends Component {
                         >
                             Cancel
                         </button>
-                        <p style={{ color: "red" }}>
-                            {this.state.errorMessage}
-                        </p>
+                        {this.state.errorMessage ? (
+                            <div style={{ color: "red" }}>
+                                <p>"Invalid input.</p>
+                                <br />
+                                <p>All data must be written.</p>
+                                <br />
+                                <p>License plate is unique. Mileage > 0"</p>
+                            </div>
+                        ) : null}
                     </div>
                 ) : null}
 
@@ -264,9 +268,14 @@ class VehicleTable extends Component {
                         >
                             Cancel
                         </button>
-                        <p style={{ color: "red" }}>
-                            {this.state.errorMessage}
-                        </p>
+                        {this.state.errorMessage ? (
+                            <div style={{ color: "red" }}>
+                                <p>"Invalid input.</p>
+                                <p>All data must be written.</p>
+                                <p>License plate is unique. </p>
+                                <p>Mileage > 0"</p>
+                            </div>
+                        ) : null}
                     </div>
                 ) : null}
                 <Container className="container-fluid">{vehicles}</Container>
